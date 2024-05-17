@@ -4,7 +4,17 @@ pub fn factorial(n: u32) -> u32 {
     // interprets as "I'll get back to this later", thus
     // suppressing type errors.
     // It panics at runtime.
-    todo!()
+    if n < 0 {
+        panic!("Factorial is not defined for negative numbers");
+    } else {
+        let mut result = 1;
+        let mut i = 0;
+        while i < n {
+            i += 1;
+            result *= i;
+        }
+        result
+    }
 }
 
 #[cfg(test)]
