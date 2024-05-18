@@ -13,7 +13,8 @@ The **scope** of a variable is the region of Rust code where that variable is va
 The scope of a variable starts with its declaration.
 It ends when one of the following happens:
 
-1. the block (i.e. the code between `{}`) where the variable was declared ends 
+1. the block (i.e. the code between `{}`) where the variable was declared ends
+
    ```rust
    fn main() {
       // `x` is not yet in scope here
@@ -21,8 +22,10 @@ It ends when one of the following happens:
       let x = "World".to_string(); // <-- x's scope starts here...
       let h = "!".to_string(); //   |
    } //  <-------------- ...and ends here
-   ``` 
+   ```
+
 2. ownership of the variable is transferred to someone else (e.g. a function or another variable)
+
    ```rust
    fn compute(t: String) {
       // Do something [...]
@@ -34,15 +37,15 @@ It ends when one of the following happens:
        compute(s); // <------------------- ..and ends here
                    //   because `s` is moved into `compute`
    } 
-   ``` 
-   
+   ```
+
 ## Destructors
 
 When the owner of a value goes out of scope, Rust invokes its **destructor**.  
 The destructor tries to clean up the resources used by that value—in particular, whatever memory it allocated.
 
 You can manually invoke the destructor of a value by passing it to `std::mem::drop`.  
-That's why you'll often hear Rust developers saying "that value has been **dropped**" as a way to state that a value 
+That's why you'll often hear Rust developers saying "that value has been **dropped**" as a way to state that a value
 has gone out of scope and its destructor has been invoked.
 
 ### Visualizing drop points
@@ -55,7 +58,7 @@ fn main() {
    let x = "World".to_string();
    let h = "!".to_string();
 }
-``` 
+```
 
 It's equivalent to:
 
@@ -100,11 +103,11 @@ fn main() {
 }
 ```
 
-Notice the difference: even though `s` is no longer valid after `compute` is called in `main`, there is no `drop(s)` 
+Notice the difference: even though `s` is no longer valid after `compute` is called in `main`, there is no `drop(s)`
 in `main`.
 When you transfer ownership of a value to a function, you're also **transferring the responsibility of cleaning it up**.  
 
-This ensures that the destructor for a value is called **at most[^leak] once**, preventing 
+This ensures that the destructor for a value is called **at most[^leak] once**, preventing
 [double free bugs](https://owasp.org/www-community/vulnerabilities/Doubly_freeing_memory) by design.
 
 ### Use after drop

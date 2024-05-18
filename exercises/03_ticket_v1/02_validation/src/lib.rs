@@ -5,6 +5,7 @@ struct Ticket {
 }
 
 impl Ticket {
+    const LEGAL_STATUSES: [&'static str; 3] = ["To-Do", "In Progress", "Done"];
     // TODO: implement the `new` function.
     //  The following requirements should be met:
     //   - Only `To-Do`, `In Progress`, and `Done` statuses are allowed.
@@ -17,7 +18,17 @@ impl Ticket {
     // as well as some `String` methods. Use the documentation of Rust's standard library
     // to find the most appropriate options -> https://doc.rust-lang.org/std/string/struct.String.html
     fn new(title: String, description: String, status: String) -> Self {
-        todo!();
+        assert!(
+            Self::LEGAL_STATUSES.contains(&status.as_str()),
+            "Only `To-Do`, `In Progress`, and `Done` statuses are allowed"
+        );
+        assert!(!title.is_empty(), "Title cannot be empty");
+        assert!(!description.is_empty(), "Description cannot be empty");
+        assert!(title.len() < 50, "Title cannot be longer than 50 characters");
+        assert!(
+            description.len() < 500,
+            "Description cannot be longer than 500 characters"
+        );
         Self {
             title,
             description,
