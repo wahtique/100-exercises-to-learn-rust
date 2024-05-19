@@ -7,6 +7,7 @@ pub struct Ticket {
 }
 
 impl Ticket {
+    /// does something
     pub fn new(title: String, description: String, status: String) -> Ticket {
         if title.is_empty() {
             panic!("Title cannot be empty");
