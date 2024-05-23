@@ -8,10 +8,18 @@ enum TicketNewError {}
 //   When the description is invalid, instead, it should use a default description:
 //   "Description not provided".
 fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
-    todo!()
+    match Ticket::new(title.clone(), description.clone(), status.clone()) {
+        Ok(ticket) => ticket,
+        Err(ValidationError::InvalidTitle(reason)) => panic!("{}", reason),
+        Err(ValidationError::InvalidDescription(_)) => Ticket {
+            title,
+            description: "Description not provided".to_string(),
+            status,
+        },
+    }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 struct Ticket {
     title: String,
     description: String,
@@ -25,23 +33,24 @@ enum Status {
     Done,
 }
 
+enum ValidationError {
+    InvalidTitle(String),
+    InvalidDescription(String),
+}
+
 impl Ticket {
-    pub fn new(
-        title: String,
-        description: String,
-        status: Status,
-    ) -> Result<Ticket, TicketNewError> {
+    pub fn new(title: String, description: String, status: Status) -> Result<Ticket, ValidationError> {
         if title.is_empty() {
-            return Err("Title cannot be empty".to_string());
+            return Err(ValidationError::InvalidTitle("Title cannot be empty".to_string()));
         }
         if title.len() > 50 {
-            return Err("Title cannot be longer than 50 characters".to_string());
+            return Err(ValidationError::InvalidTitle("Title cannot be longer than 50 characters".to_string()));
         }
         if description.is_empty() {
-            return Err("Description cannot be empty".to_string());
+            return Err(ValidationError::InvalidDescription("Description cannot be empty".to_string()));
         }
         if description.len() > 500 {
-            return Err("Description cannot be longer than 500 characters".to_string());
+            return Err(ValidationError::InvalidDescription("Description cannot be longer than 500 characters".to_string()));
         }
 
         Ok(Ticket {
@@ -54,8 +63,9 @@ impl Ticket {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use common::{overly_long_description, overly_long_title, valid_description, valid_title};
+
+    use super::*;
 
     #[test]
     #[should_panic(expected = "Title cannot be empty")]

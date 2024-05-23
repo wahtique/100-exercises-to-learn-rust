@@ -19,9 +19,7 @@ pub struct SaturatingU16 {
 /// provide conversion from u16, u8, &u16, &u8
 impl From<u16> for SaturatingU16 {
     fn from(value: u16) -> Self {
-        Self {
-            value,
-        }
+        Self { value }
     }
 }
 
@@ -35,9 +33,7 @@ impl From<u8> for SaturatingU16 {
 
 impl From<&u16> for SaturatingU16 {
     fn from(value: &u16) -> Self {
-        Self {
-            value: *value,
-        }
+        Self { value: *value }
     }
 }
 
@@ -56,9 +52,7 @@ impl Add<SaturatingU16> for SaturatingU16 {
 
     fn add(self, rhs: SaturatingU16) -> Self::Output {
         let sum = self.value.saturating_add(rhs.value);
-        SaturatingU16 {
-            value: sum,
-        }
+        SaturatingU16 { value: sum }
     }
 }
 
@@ -67,9 +61,7 @@ impl Add<u16> for SaturatingU16 {
 
     fn add(self, rhs: u16) -> Self::Output {
         let sum = self.value.saturating_add(rhs);
-        SaturatingU16 {
-            value: sum,
-        }
+        SaturatingU16 { value: sum }
     }
 }
 
@@ -78,9 +70,7 @@ impl Add<&u16> for SaturatingU16 {
 
     fn add(self, rhs: &u16) -> Self::Output {
         let sum = self.value.saturating_add(*rhs);
-        SaturatingU16 {
-            value: sum,
-        }
+        SaturatingU16 { value: sum }
     }
 }
 
@@ -89,9 +79,7 @@ impl Add<&SaturatingU16> for SaturatingU16 {
 
     fn add(self, rhs: &SaturatingU16) -> Self::Output {
         let sum = self.value.saturating_add(rhs.value);
-        SaturatingU16 {
-            value: sum,
-        }
+        SaturatingU16 { value: sum }
     }
 }
 

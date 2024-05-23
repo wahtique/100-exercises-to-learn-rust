@@ -1,7 +1,7 @@
 // TODO: Re-implement `Ticket`'s accessor methods. This time return a `&str` rather than a `&String`.
 
 pub struct Ticket {
-    title: String,                               
+    title: String,
     description: String,
     status: String,
 }

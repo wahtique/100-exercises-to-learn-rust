@@ -2,7 +2,19 @@
 //   When the description is invalid, instead, it should use a default description:
 //   "Description not provided".
 fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
-    todo!()
+    Ticket::new(title.clone(), description.clone(), status.clone())
+        .map_err(|err| {
+            if err.starts_with("Title") {
+                panic!("{}", err)
+            }
+        })
+        .unwrap_or(
+            Ticket {
+                title,
+                description: "Description not provided".to_string(),
+                status,
+            }
+        )
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -44,8 +56,9 @@ impl Ticket {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use common::{overly_long_description, overly_long_title, valid_description, valid_title};
+
+    use super::*;
 
     #[test]
     #[should_panic(expected = "Title cannot be empty")]
