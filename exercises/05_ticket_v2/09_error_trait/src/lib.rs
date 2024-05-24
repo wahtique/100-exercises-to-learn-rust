@@ -3,17 +3,36 @@
 //  The docs for the `std::fmt` module are a good place to start and look for examples:
 //  https://doc.rust-lang.org/std/fmt/index.html#write
 
+use std::error::Error;
+use std::fmt::Display;
+
+#[derive(Debug)]
 enum TicketNewError {
     TitleError(String),
     DescriptionError(String),
 }
+
+impl Display for TicketNewError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            TicketNewError::TitleError(msg) => write!(f, "{}", msg),
+            TicketNewError::DescriptionError(msg) => write!(f, "{}", msg),
+        }
+    }
+}
+
+impl Error for TicketNewError {}
 
 // TODO: `easy_ticket` should panic when the title is invalid, using the error message
 //   stored inside the relevant variant of the `TicketNewError` enum.
 //   When the description is invalid, instead, it should use a default description:
 //   "No description provided".
 fn easy_ticket(title: String, description: String, status: Status) -> Ticket {
-    todo!()
+    match Ticket::new(title.clone(), description.clone(), status.clone()) {
+        Ok(ticket) => ticket,
+        Err(TicketNewError::DescriptionError(_)) => Ticket::new(title, "Description not provided".into(), status).unwrap(),
+        Err(err) => panic!("{}", err.to_string())
+    }
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -67,9 +86,11 @@ impl Ticket {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use common::{overly_long_description, overly_long_title, valid_description, valid_title};
     use static_assertions::assert_impl_one;
+
+    use common::{overly_long_description, overly_long_title, valid_description, valid_title};
+
+    use super::*;
 
     #[test]
     #[should_panic(expected = "Title cannot be empty")]

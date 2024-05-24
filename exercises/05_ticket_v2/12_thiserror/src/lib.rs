@@ -3,10 +3,15 @@
 //   a `String` field into each variant.
 //   You'll also have to add `thiserror` as a dependency in the `Cargo.toml` file.
 
+#[derive(thiserror::Error, Debug, PartialEq)]
 enum TicketNewError {
+    #[error("Title cannot be empty")]
     TitleCannotBeEmpty,
+    #[error("Title cannot be longer than 50 characters")]
     TitleTooLong,
+    #[error("Description cannot be empty")]
     DescriptionCannotBeEmpty,
+    #[error("Description cannot be longer than 500 characters")]
     DescriptionTooLong,
 }
 
@@ -53,8 +58,9 @@ impl Ticket {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use common::{overly_long_description, overly_long_title, valid_description, valid_title};
+
+    use super::*;
 
     #[test]
     fn title_cannot_be_empty() {
