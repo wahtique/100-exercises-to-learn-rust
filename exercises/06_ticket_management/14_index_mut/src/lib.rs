@@ -1,6 +1,7 @@
 // TODO: Implement `IndexMut<&TicketId>` and `IndexMut<TicketId>` for `TicketStore`.
 
-use std::ops::Index;
+use std::ops::{Index, IndexMut};
+
 use ticket_fields::{TicketDescription, TicketTitle};
 
 #[derive(Clone)]
@@ -11,6 +12,18 @@ pub struct TicketStore {
 
 #[derive(Clone, Copy, Debug, PartialEq)]
 pub struct TicketId(u64);
+
+impl IndexMut<&TicketId> for TicketStore {
+    fn index_mut(&mut self, index: &TicketId) -> &mut Self::Output {
+        self.tickets.iter_mut().find(|t| t.id == *index).unwrap()
+    }
+}
+
+impl IndexMut<TicketId> for TicketStore {
+    fn index_mut(&mut self, index: TicketId) -> &mut Self::Output {
+        self.index_mut(&index)
+    }
+}
 
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ticket {
@@ -77,8 +90,9 @@ impl Index<&TicketId> for TicketStore {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Status, TicketDraft, TicketStore};
     use ticket_fields::test_helpers::{ticket_description, ticket_title};
+
+    use crate::{Status, TicketDraft, TicketStore};
 
     #[test]
     fn works() {

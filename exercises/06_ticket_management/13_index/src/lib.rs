@@ -1,11 +1,29 @@
 // TODO: Implement `Index<&TicketId>` and `Index<TicketId>` for `TicketStore`.
 
+use std::ops::Index;
+
 use ticket_fields::{TicketDescription, TicketTitle};
 
 #[derive(Clone)]
 pub struct TicketStore {
     tickets: Vec<Ticket>,
     counter: u64,
+}
+
+impl Index<TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, id: TicketId) -> &Self::Output {
+        self.get(id).expect("Ticket not found")
+    }
+}
+
+impl Index<&TicketId> for TicketStore {
+    type Output = Ticket;
+
+    fn index(&self, id: &TicketId) -> &Self::Output {
+        self.get(*id).expect("Ticket not found")
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
@@ -60,8 +78,9 @@ impl TicketStore {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Status, TicketDraft, TicketStore};
     use ticket_fields::test_helpers::{ticket_description, ticket_title};
+
+    use crate::{Status, TicketDraft, TicketStore};
 
     #[test]
     fn works() {

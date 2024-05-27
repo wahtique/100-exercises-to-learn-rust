@@ -6,6 +6,15 @@ pub struct TicketStore {
     tickets: Vec<Ticket>,
 }
 
+impl<'a> IntoIterator for &'a TicketStore {
+    type Item = &'a Ticket;
+    type IntoIter = std::slice::Iter<'a, Ticket>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.tickets.iter()
+    }
+}
+
 #[derive(Clone, Debug, PartialEq)]
 pub struct Ticket {
     pub title: TicketTitle,
@@ -38,8 +47,9 @@ impl TicketStore {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
     use ticket_fields::test_helpers::{ticket_description, ticket_title};
+
+    use super::*;
 
     #[test]
     fn add_ticket() {

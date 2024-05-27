@@ -3,6 +3,7 @@
 
 use std::collections::HashMap;
 use std::ops::{Index, IndexMut};
+
 use ticket_fields::{TicketDescription, TicketTitle};
 
 #[derive(Clone)]
@@ -38,7 +39,7 @@ pub enum Status {
 impl TicketStore {
     pub fn new() -> Self {
         Self {
-            tickets: todo!(),
+            tickets: HashMap::new(),
             counter: 0,
         }
     }
@@ -52,7 +53,7 @@ impl TicketStore {
             description: ticket.description,
             status: Status::ToDo,
         };
-        todo!();
+        self.tickets.insert(id, ticket);
         id
     }
 
@@ -95,8 +96,9 @@ impl IndexMut<&TicketId> for TicketStore {
 
 #[cfg(test)]
 mod tests {
-    use crate::{Status, TicketDraft, TicketStore};
     use ticket_fields::test_helpers::{ticket_description, ticket_title};
+
+    use crate::{Status, TicketDraft, TicketStore};
 
     #[test]
     fn works() {

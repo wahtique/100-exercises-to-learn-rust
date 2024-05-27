@@ -6,14 +6,16 @@
 // You also need to add a `get` method that takes as input a `TicketId`
 // and returns an `Option<&Ticket>`.
 
+use std::collections::HashMap;
+
 use ticket_fields::{TicketDescription, TicketTitle};
 
 #[derive(Clone)]
 pub struct TicketStore {
-    tickets: Vec<Ticket>,
+    tickets: HashMap<TicketId, Ticket>,
 }
 
-#[derive(Clone, Copy, Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq, Hash, Eq)]
 pub struct TicketId(u64);
 
 #[derive(Clone, Debug, PartialEq)]
@@ -40,19 +42,32 @@ pub enum Status {
 impl TicketStore {
     pub fn new() -> Self {
         Self {
-            tickets: Vec::new(),
+            tickets: HashMap::new(),
         }
     }
 
-    pub fn add_ticket(&mut self, ticket: Ticket) {
-        self.tickets.push(ticket);
+    pub fn add_ticket(&mut self, ticket: TicketDraft) -> TicketId {
+        let new_id = TicketId(self.tickets.len() as u64);
+        let new_ticket = Ticket {
+            id: new_id,
+            title: ticket.title,
+            description: ticket.description,
+            status: Status::ToDo,
+        };
+        let _ = self.tickets.insert(new_id, new_ticket);
+        new_id
+    }
+
+    pub fn get(&self, id: TicketId) -> Option<&Ticket> {
+        self.tickets.get(&id)
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use crate::{Status, TicketDraft, TicketStore};
     use ticket_fields::test_helpers::{ticket_description, ticket_title};
+
+    use crate::{Status, TicketDraft, TicketStore};
 
     #[test]
     fn works() {
